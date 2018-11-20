@@ -17,6 +17,7 @@ import javax.persistence.TypedQuery;
 
 import ardea.events.Event;
 import ardea.events.EventsRegistry;
+import ardea.events.Team;
 
 
 /**
@@ -71,6 +72,13 @@ public class EventsBean implements EventsRegistry{
 
 	private Predicate<? super String> whenContains(String word) {
 		return k->k.contains(word);
+	}
+
+	public Team findTeam(String name) {
+		
+		return em.createQuery("select t from Team t where t.name = :name", Team.class)
+				.setParameter("name", name)
+				.getSingleResult();
 	}
 
 }

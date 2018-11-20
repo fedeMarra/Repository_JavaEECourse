@@ -1,6 +1,5 @@
 package ardea.events;
 
-import java.time.LocalDate;
 //import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -10,10 +9,15 @@ import java.util.Date;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Column;
+import javax.persistence.DiscriminatorColumn;
+import javax.persistence.DiscriminatorType;
+import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -23,6 +27,9 @@ import javax.persistence.Transient;
 import ardea.events.EventsRegistry;
 
 @Entity
+@Inheritance(strategy=InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name="DTYPE", discriminatorType=DiscriminatorType.STRING)
+@DiscriminatorValue(value="Event")
 @Table(name="event")
 @Access(AccessType.FIELD)
 @NamedQuery(name="Event.findByName", query="SELECT e FROM Event e WHERE UPPER(e.name) LIKE :eventName")

@@ -1,2 +1,10 @@
 CREATE TABLE event(id identity, name varchar, price decimal, eventdate timestamp);
-CREATE TABLE 
+ALTER TABLE event add column(dtype varchar);
+UPDATE event set dtype='Event';
+CREATE TABLE team (id identity, name varchar);
+ALTER TABLE event add column(team1 bigint, team2 bigint);
+
+insert into team (name) values ('Juventus');
+insert into team (name) values ('Milan');
+insert into team (name) values ('Roma');
+insert into team (name) values ('Napoli');
