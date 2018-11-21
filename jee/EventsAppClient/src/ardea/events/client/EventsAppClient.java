@@ -33,10 +33,10 @@ public class EventsAppClient {
 	}
 
 	private void run() {
-		service.addEvent("Concerto2", "30", "2018-10-07@21:00");
-		service.addEvent("Gran Prix Atletica2", "35", "2018-10-08@18:00");
-		service.addMatch("Juventus", "Napoli", "40", "2018-12-06@20:30");
-		service.addMatch("Milan", "Roma", "40", "2019-01-08@20:30");
+		service.addEvent("Concerto3", "30", "2018-10-07@21:00");
+		service.addEvent("Gran Prix Atletica3", "35", "2018-10-08@18:00");
+		service.addMatch("Juventus", "Milan", "40", "2018-12-22@20:30");
+		service.addMatch("Napoli", "Roma", "40", "2019-01-23@20:30");
 		
 	}
 

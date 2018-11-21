@@ -1,5 +1,6 @@
 package ardea.events;
 
+import java.io.Serializable;
 //import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -33,7 +34,12 @@ import ardea.events.EventsRegistry;
 @Table(name="event")
 @Access(AccessType.FIELD)
 @NamedQuery(name="Event.findByName", query="SELECT e FROM Event e WHERE UPPER(e.name) LIKE :eventName")
-public class Event {
+public class Event implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;

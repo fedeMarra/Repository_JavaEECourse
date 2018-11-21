@@ -9,8 +9,13 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+import javax.annotation.Resource;
 import javax.ejb.LocalBean;
 import javax.ejb.Singleton;
+import javax.inject.Inject;
+import javax.jms.JMSContext;
+import javax.jms.JMSProducer;
+import javax.jms.Queue;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
@@ -18,7 +23,6 @@ import javax.persistence.TypedQuery;
 import ardea.events.Event;
 import ardea.events.EventsRegistry;
 import ardea.events.Team;
-
 
 /**
  * Session Bean implementation class EventsBean
@@ -29,6 +33,12 @@ public class EventsBean implements EventsRegistry{
 	
 	@PersistenceContext(name="EventsCore")
 	private EntityManager em;
+	
+	@Inject
+	private JMSContext context;
+	
+	@Resource(lookup="java:jboss/exported/jms/eventsQueue")
+	private Queue queue;
 	
 	private Map<String,Event> events;
 
@@ -43,6 +53,9 @@ public class EventsBean implements EventsRegistry{
     	Logger.getLogger("ardea.events.service").info("Calling addEvent" + event.toString());
     	//event.registerOn(this);
     	em.persist(event);
+    	JMSProducer producer =context.createProducer();
+    	producer.send(queue, event);
+    	
     }
     
     @Override
