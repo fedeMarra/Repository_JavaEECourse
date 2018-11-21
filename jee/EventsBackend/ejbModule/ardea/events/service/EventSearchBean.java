@@ -28,5 +28,9 @@ public class EventSearchBean {
     public List<Event> searchByName(String word){
     	return eventsBean.search(word);
     }
+    
+    public Event searchById(Long eventId) {
+    	return eventsBean.searchId(eventId);
+    }
 
 }

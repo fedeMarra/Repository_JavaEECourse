@@ -81,4 +81,8 @@ public class EventsBean implements EventsRegistry{
 				.getSingleResult();
 	}
 
+	public Event searchId(Long eventId) {
+		return em.find(Event.class, eventId);
+	}
+
 }
