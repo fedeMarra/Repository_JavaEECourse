@@ -4,9 +4,11 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 
 import javax.jms.ConnectionFactory;
+import javax.jms.JMSConsumer;
 import javax.jms.JMSContext;
 import javax.jms.JMSException;
 import javax.jms.Message;
+import javax.jms.MessageListener;
 import javax.jms.Queue;
 import javax.jms.QueueBrowser;
 import javax.naming.Context;
@@ -38,11 +40,31 @@ public class MessageBrowser {
 	
 	public void run() throws JMSException {
 		JMSContext context = connectionFactory.createContext("fedeM", "1234Marra");
-		QueueBrowser browser = context.createBrowser(queue);
-		Enumeration e = browser.getEnumeration();
-		while(e.hasMoreElements()) {
-			Message msg = (Message)e.nextElement();	
-			System.out.println("1" + msg.getBody(Event.class));
+		context.start();
+//		QueueBrowser browser = context.createBrowser(queue);
+//		Enumeration e = browser.getEnumeration();
+//		while(e.hasMoreElements()) {
+//			Message msg = (Message)e.nextElement();	
+//			System.out.println(msg.getBody(Event.class));
+//		}
+		// try with resources
+		try ( JMSConsumer consumer = context.createConsumer(queue)){
+			consumer.setMessageListener(new MessageListener() {
+	
+				@Override
+				public void onMessage(Message event) {
+					try {
+						System.out.println(event.getBody(Event.class));
+					}catch(JMSException e) {
+						e.printStackTrace();
+					}
+				}	
+			});	
+			try {
+				Thread.currentThread().sleep(10000);
+			}catch(InterruptedException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 

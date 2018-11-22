@@ -24,6 +24,8 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 
 import ardea.events.EventsRegistry;
 
@@ -34,6 +36,7 @@ import ardea.events.EventsRegistry;
 @Table(name="event")
 @Access(AccessType.FIELD)
 @NamedQuery(name="Event.findByName", query="SELECT e FROM Event e WHERE UPPER(e.name) LIKE :eventName")
+@XmlRootElement(name="event")
 public class Event implements Serializable {
 	/**
 	 * 
@@ -42,13 +45,16 @@ public class Event implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@XmlElement()
 	private Long id;
-	
+	@XmlElement()
 	private String name;
+	@XmlElement()
 	private int price;
 	//private LocalDate localDate;
 	
 	@Transient
+	@XmlElement(name="eventDate")
 	private LocalDateTime localDate;
 	
 	//@Temporal(TemporalType.TIMESTAMP)
@@ -80,6 +86,7 @@ public class Event implements Serializable {
 		return id;
 	}
 
+	@XmlElement()
 	public void setEventDate(Date date) {
 		localDate= LocalDateTime.ofInstant(date.toInstant(), ZoneId.systemDefault());
 	}

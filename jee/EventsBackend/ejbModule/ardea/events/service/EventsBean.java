@@ -98,4 +98,8 @@ public class EventsBean implements EventsRegistry{
 		return em.find(Event.class, eventId);
 	}
 
+	public Event updateEvent(Event event) {
+		return em.merge(event);
+	}
+
 }
