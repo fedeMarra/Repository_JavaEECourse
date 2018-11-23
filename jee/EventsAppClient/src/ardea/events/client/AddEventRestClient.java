@@ -47,9 +47,9 @@ public class AddEventRestClient {
 		Builder request = target.request();
 		
 		Form f = new Form();    
-		f.param("name", "Concert");
-		f.param("price", "30");
-		f.param("date", "2018-12-20@21:15");
+		f.param("name", "Teatro3");
+		f.param("price", "40");
+		f.param("date", "2018-12-01@20:15");
 		Entity<Form> e = Entity.form(f);
 		
 		Response response = request.post(e);

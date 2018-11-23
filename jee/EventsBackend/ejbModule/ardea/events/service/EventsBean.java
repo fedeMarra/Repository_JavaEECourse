@@ -17,6 +17,7 @@ import javax.ejb.TransactionAttributeType;
 import javax.ejb.TransactionManagement;
 import javax.ejb.TransactionManagementType;
 import javax.inject.Inject;
+import javax.interceptor.Interceptors;
 import javax.jms.JMSContext;
 import javax.jms.JMSProducer;
 import javax.jms.Queue;
@@ -34,6 +35,8 @@ import ardea.events.Team;
 @Singleton
 @LocalBean
 @TransactionManagement(TransactionManagementType.CONTAINER) //Default
+@MyLoggingBinding
+//@Interceptors(MyLogging.class)  //stessa cosa dell'annotazione di sopra (creata custom)
 public class EventsBean implements EventsRegistry{
 	
 	@PersistenceContext(name="EventsCore")
