@@ -12,6 +12,10 @@ import java.util.function.Predicate;
 import javax.annotation.Resource;
 import javax.ejb.LocalBean;
 import javax.ejb.Singleton;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
+import javax.ejb.TransactionManagement;
+import javax.ejb.TransactionManagementType;
 import javax.inject.Inject;
 import javax.jms.JMSContext;
 import javax.jms.JMSProducer;
@@ -29,6 +33,7 @@ import ardea.events.Team;
  */
 @Singleton
 @LocalBean
+@TransactionManagement(TransactionManagementType.CONTAINER) //Default
 public class EventsBean implements EventsRegistry{
 	
 	@PersistenceContext(name="EventsCore")
@@ -49,6 +54,7 @@ public class EventsBean implements EventsRegistry{
     	events = new HashMap<>();
     }
     
+    @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public void addEvent(Event event){
     	Logger.getLogger("ardea.events.service").info("Calling addEvent" + event.toString());
     	//event.registerOn(this);
