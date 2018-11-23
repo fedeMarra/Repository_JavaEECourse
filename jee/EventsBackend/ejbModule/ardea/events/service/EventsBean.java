@@ -12,6 +12,8 @@ import java.util.function.Predicate;
 import javax.annotation.Resource;
 import javax.ejb.LocalBean;
 import javax.ejb.Singleton;
+import javax.ejb.TransactionManagement;
+import javax.ejb.TransactionManagementType;
 import javax.inject.Inject;
 import javax.jms.JMSContext;
 import javax.jms.JMSProducer;
@@ -19,6 +21,12 @@ import javax.jms.Queue;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
+import javax.transaction.HeuristicMixedException;
+import javax.transaction.HeuristicRollbackException;
+import javax.transaction.NotSupportedException;
+import javax.transaction.RollbackException;
+import javax.transaction.SystemException;
+import javax.transaction.UserTransaction;
 
 import ardea.events.Event;
 import ardea.events.EventsRegistry;
@@ -29,6 +37,7 @@ import ardea.events.Team;
  */
 @Singleton
 @LocalBean
+@TransactionManagement(TransactionManagementType.BEAN)
 public class EventsBean implements EventsRegistry{
 	
 	@PersistenceContext(name="EventsCore")
@@ -40,6 +49,9 @@ public class EventsBean implements EventsRegistry{
 	@Resource(lookup="java:jboss/exported/jms/eventsQueue")
 	private Queue queue;
 	
+	@Resource
+	private UserTransaction tx;
+	
 	private Map<String,Event> events;
 
     /**
@@ -50,12 +62,22 @@ public class EventsBean implements EventsRegistry{
     }
     
     public void addEvent(Event event){
-    	Logger.getLogger("ardea.events.service").info("Calling addEvent" + event.toString());
-    	//event.registerOn(this);
-    	em.persist(event);
-    	JMSProducer producer =context.createProducer();
-    	producer.send(queue, event);
-    	
+    	try {
+			tx.begin();
+			Logger.getLogger("ardea.events.service").info("Calling addEvent" + event.toString());
+	    	//event.registerOn(this);
+	    	em.persist(event);
+	    	JMSProducer producer =context.createProducer();
+	    	producer.send(queue, event);
+	    	tx.commit();
+		}catch (NotSupportedException | SystemException | SecurityException | IllegalStateException | RollbackException | HeuristicMixedException | HeuristicRollbackException e) {
+			e.printStackTrace();
+			try {
+				tx.rollback();
+			}catch(IllegalStateException | SecurityException | SystemException e1){
+				e1.printStackTrace();
+			}
+		}
     }
     
     @Override
